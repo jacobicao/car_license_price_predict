@@ -42,6 +42,8 @@ def estimate_n():
     plt.plot(y)
     plt.show()
 
+    return 10000
+
 
 def estimate_mu3():
     """
@@ -63,8 +65,10 @@ def estimate_mu3():
     plt.plot(y)
     plt.show()
 
+    return 10000
 
-def estimate_p(N, n, mu, l, de, date):
+
+def estimate_p_para_core(m, n, mu, l, de, date):
     """
     :param N: 总参与人数
     :param n: 中标人数
@@ -86,7 +90,13 @@ def estimate_p(N, n, mu, l, de, date):
     """
     from gen_model.One_Generator import One_Generator
     game = One_Generator()
-    game.cal_para(N, n, mu, l, de, date)
+    game.cal_para(m, n, mu, l, de, date)
+
+
+def estimate_p_para():
+    tran = data[['N', 'n', 'mu3', 'p', 'call']][5:34]
+    for k, v in tran.iterrows():
+        estimate_p_para_core(*v.tolist(), datetime.strftime(k, "%Y-%m-%d"))
 
 
 def doc():
@@ -137,21 +147,22 @@ def estimate_p_2(size):
     print(gbdt.predict(x_m)[0] - y_m[0])
 
 
-def main():
-    tran = data[['N', 'n', 'mu3', 'p', 'call']][5:34]
-    for k, v in tran.iterrows():
-        estimate_p(*v.tolist(), datetime.strftime(k, "%Y-%m-%d"))
-
-
-def test():
+def estimate_p(n, mu3):
+    m = [0.0171, 0.8255, 57.5976, 21940.0068, 4795.9970, 89787.7440, 8792.5416]
     from gen_model.One_Generator import One_Generator
     game = One_Generator()
-    game.setter(0.0743,0.7326,4.5302,33498.6207,6134.0085,70694.5365,18053.1159)
-    t = game.gen_game()
+    game.setter(*m)
+    t = game.gen_game(n)
     plt.hist(t, bins=100)
     plt.show()
 
 
+def main():
+    n = estimate_n()
+    mu3 = estimate_mu3()
+    p = estimate_p(n, mu3)
+
+
 if __name__ == '__main__':
-    # test()
-    main()
+    estimate_p(10000, 20000)
+    # estimate_p_para()
