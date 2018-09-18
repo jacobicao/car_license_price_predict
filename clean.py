@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 data = pd.read_csv('data.csv')
 
@@ -17,3 +18,15 @@ data = data[person].rename(columns=rename_map)
 data['date'] = pd.to_datetime(data['date'], format='%Y%m%d')
 
 data.to_csv('single.csv', index=False)
+
+data = pd.read_csv('para.csv')
+data = data[['date', 'p1', 'p2', 'lam', 'a', 'b', 'c', 'd']]
+
+data[['p1', 'p2']].plot()
+plt.show()
+
+data['lam'].plot()
+plt.show()
+
+data[['a', 'b', 'c', 'd']].plot(subplots=True)
+plt.show()
