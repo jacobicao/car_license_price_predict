@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from gen_model.Gen_kernel import gen_kernel
+from gen_model.Gen_kernel import gen_kernel, gen_kernel_n
 
 
 class Para_solution:
@@ -17,8 +17,10 @@ class Para_solution:
 
     def loss_fun(self, m):
         t = []
-        for q in range(self.N):
-            t.append(gen_kernel(m) // 100 * 100)
+        # for q in range(self.N):
+        #     t.append(gen_kernel(m) // 100 * 100)
+        t = gen_kernel_n(m, self.N)
+        t = t // 100 * 100
         t = sorted(t, reverse=True)
         a = np.array(t)
         tn = a[self.n - 1]
@@ -56,12 +58,12 @@ class Para_solution:
         from multiprocessing import Pool, cpu_count
         cpu_ct = cpu_count()
         p = Pool(cpu_ct)
-        res = p.map(self.geneticoptimize, [self.domain, ] * cpu_ct)
+        res = p.map(self.genetic_optimize, [self.domain, ] * cpu_ct)
         res.sort()
         print('res:%.8f\nsol:%s' % (res[0][0], np.array(res[0][1]).round(4)))
         return [res[0][0]] + res[0][1]
 
-    def geneticoptimize(self, domain, step=0.1, popsize=50, mutrob=0.2, elite=0.2, maxiter=10):
+    def genetic_optimize(self, domain, step=0.1, popsize=50, mutrob=0.2, elite=0.2, maxiter=100):
         step = self.step
 
         def mutate(vec):
@@ -80,10 +82,11 @@ class Para_solution:
             return r1[0:i] + r2[i:]
 
         pop = []
+        scores = []
         for _ in range(popsize):
-            vec = [random.uniform(domain[k][0], domain[k][1]) for k in range(len(domain))]
-            pop.append(vec)
-        topelite = int(elite * popsize)
+            vect = [random.uniform(domain[k][0], domain[k][1]) for k in range(len(domain))]
+            pop.append(vect)
+        top_elite = int(elite * popsize)
         for i in range(maxiter):
             if [] in pop:
                 print('***')
@@ -93,19 +96,19 @@ class Para_solution:
                 print(i, 'pop!', args)
             sorted(scores)
             ranked = [v for (s, v) in scores]
-            pop = ranked[0:topelite]
+            pop = ranked[0:top_elite]
             while len(pop) < popsize:
                 if random.random() < mutrob:
-                    c = random.randint(0, topelite)
+                    c = random.randint(0, top_elite)
                     if len(ranked[c]) != len(domain):
                         continue
                     temp = mutate(ranked[c])
-                    if temp == []:
+                    if not len(temp):
                         print('******', ranked[c])
                     else:
                         pop.append(temp)
                 else:
-                    c1 = random.randint(0, topelite)
-                    c2 = random.randint(0, topelite)
+                    c1 = random.randint(0, top_elite)
+                    c2 = random.randint(0, top_elite)
                     pop.append(crossover(ranked[c1], ranked[c2]))
         return scores[0]

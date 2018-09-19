@@ -94,7 +94,7 @@ def estimate_p_para_core(m, n, mu, l, de, date):
 
 
 def estimate_p_para():
-    tran = data[['N', 'n', 'mu3', 'p', 'call']][5:34]
+    tran = data[['N', 'n', 'mu3', 'p', 'call']][5:]
     for k, v in tran.iterrows():
         estimate_p_para_core(*v.tolist(), datetime.strftime(k, "%Y-%m-%d"))
 
@@ -148,7 +148,7 @@ def estimate_p_2(size):
 
 
 def estimate_p(n, mu3):
-    m = [0.0171, 0.8255, 57.5976, 21940.0068, 4795.9970, 89787.7440, 8792.5416]
+    m = [0.0068,0.8447,91.9473,64691.2756,10778.3217,106783.3704,7280.6181]
     from gen_model.One_Generator import One_Generator
     game = One_Generator()
     game.setter(*m)
@@ -156,13 +156,23 @@ def estimate_p(n, mu3):
     plt.hist(t, bins=100)
     plt.show()
 
+    return t
+
+
+def plot_para():
+    para = pd.read_csv('para.csv')
+    para = para[['date', 'p1', 'p2', 'lam', 'a', 'b', 'c', 'd']]
+    para.plot(subplots=True, figsize=(12, 16))
+    plt.show()
+
 
 def main():
     n = estimate_n()
     mu3 = estimate_mu3()
-    p = estimate_p(n, mu3)
+    t = estimate_p(n, mu3)
 
 
 if __name__ == '__main__':
     estimate_p(10000, 20000)
     # estimate_p_para()
+    # plot_para()
