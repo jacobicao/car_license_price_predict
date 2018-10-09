@@ -147,8 +147,8 @@ def estimate_p_2(size):
     print(gbdt.predict(x_m)[0] - y_m[0])
 
 
-def estimate_p(n, mu3):
-    m = [0.0068,0.8447,91.9473,64691.2756,10778.3217,106783.3704,7280.6181]
+def estimate_p(li, n, mu3):
+    m = [0.0102, 0.7565, 71.6482, 30570.8981, 10503.7339, 88772.7527, 13970.2140]
     from gen_model.One_Generator import One_Generator
     game = One_Generator()
     game.setter(*m)
@@ -167,12 +167,13 @@ def plot_para():
 
 
 def main():
+    li = 2900
     n = estimate_n()
     mu3 = estimate_mu3()
-    t = estimate_p(n, mu3)
+    t = estimate_p(li, n, mu3)
 
 
 if __name__ == '__main__':
-    estimate_p(10000, 20000)
+    estimate_p(3000, 10000, 20000)
     # estimate_p_para()
-    # plot_para()
+    plot_para()
