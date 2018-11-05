@@ -1,4 +1,3 @@
-#!/Users/jacob/anaconda3/bin/python
 # -*- coding: UTF-8 -*-
 
 import pandas as pd
